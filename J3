@@ -1,0 +1,13 @@
+from pyspark.sql import SQLContext
+import pyspark
+from pyspark.sql import Row
+import csv
+from pyspark.sql.functions import *
+
+sqlContext = SQLContext(sc)
+df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load('../J1.csv')
+df1 = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load('../J2.csv')
+cond = [df.product == df1.product, df.company == df1.company]
+df2=df.join(df1, cond).select(df.product,df.company,df.total_no,df1.outcome,df1.no_outcome)
+df2.coalesce(1).write.option("header","true").csv('../j3')
+df2.show()
