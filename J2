@@ -1,0 +1,10 @@
+#import pyspark
+#from pyspark.sql import Row
+#import csv
+
+#sqlContext = SQLContext(sc)
+df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load('/home/ashwin/Downloads/consumer_complaints.csv')
+df2 = df.select('company','product','company_response_to_consumer')
+df3 = df2.groupBy('company','product','company_response_to_consumer').count()
+df3.coalesce(1).write.option("header","true").csv('/home/ashwin/finalj2')
+df3.show()
